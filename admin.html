@@ -1,1 +1,1059 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>HOUFA Earning Admin</title>
 
+<style>
+*{box-sizing:border-box}
+
+body{
+    margin:0;
+    font-family:Arial,sans-serif;
+    background:#f4f6f9;
+    color:#172033;
+}
+
+header{
+    background:linear-gradient(135deg,#0d1b2a,#1e3a8a);
+    color:white;
+    padding:16px;
+}
+
+.header{
+    max-width:1150px;
+    margin:auto;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.logo{
+    font-size:21px;
+    font-weight:bold;
+}
+
+.container{
+    max-width:1150px;
+    margin:auto;
+    padding:16px;
+}
+
+.status{
+    padding:14px;
+    background:#d1fae5;
+    border-radius:12px;
+    margin-bottom:15px;
+    line-height:1.7;
+    color:#065f46;
+}
+
+input,select{
+    width:100%;
+    padding:11px;
+    border:1px solid #cbd5e1;
+    border-radius:9px;
+    margin-bottom:10px;
+}
+
+button{
+    cursor:pointer;
+}
+
+.primary{
+    border:0;
+    background:#0066ff;
+    color:white;
+    padding:11px 16px;
+    border-radius:9px;
+    font-weight:bold;
+}
+
+.danger-btn{
+    border:0;
+    background:#dc2626;
+    color:white;
+    padding:11px 16px;
+    border-radius:9px;
+    font-weight:bold;
+}
+
+.stats{
+    display:grid;
+    grid-template-columns:repeat(4,1fr);
+    gap:12px;
+}
+
+.stat{
+    background:white;
+    padding:18px;
+    border-radius:15px;
+    box-shadow:0 4px 18px rgba(0,0,0,0.04);
+}
+
+.stat small{
+    color:#64748b;
+}
+
+.stat h2{
+    margin:8px 0 0;
+}
+
+.tabs{
+    display:flex;
+    gap:8px;
+    overflow:auto;
+    margin:20px 0;
+}
+
+.tab{
+    border:0;
+    padding:11px 16px;
+    border-radius:10px;
+    background:white;
+    font-weight:bold;
+    white-space:nowrap;
+    color:#334155;
+    box-shadow:0 2px 5px rgba(0,0,0,0.02);
+}
+
+.tab.active{
+    background:#0066ff;
+    color:white;
+}
+
+.section{
+    display:none;
+    background:white;
+    padding:18px;
+    border-radius:16px;
+    box-shadow:0 4px 20px rgba(0,0,0,0.04);
+}
+
+.section.active{
+    display:block;
+}
+
+.table{
+    overflow:auto;
+}
+
+table{
+    width:100%;
+    min-width:850px;
+    border-collapse:collapse;
+}
+
+th,td{
+    padding:12px;
+    border-bottom:1px solid #e2e8f0;
+    text-align:left;
+    font-size:13px;
+}
+
+th{
+    background:#f8fafc;
+    color:#475569;
+}
+
+.action{
+    border:0;
+    padding:7px 10px;
+    border-radius:7px;
+    font-weight:bold;
+    margin:2px;
+    font-size:12px;
+}
+
+.approve{
+    background:#d1fae5;
+    color:#059669;
+}
+
+.reject{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.view{
+    background:#eff6ff;
+    color:#0066ff;
+}
+
+.delete-btn{
+    background:#fee2e2;
+    color:#dc2626;
+}
+
+.plan{
+    margin-top:10px;
+    padding:15px;
+    border:1px solid #e2e8f0;
+    border-radius:12px;
+    display:flex;
+    justify-content:space-between;
+    align-items:center;
+}
+
+.info{
+    background:#f8fafc;
+    padding:15px;
+    border-radius:12px;
+    line-height:2;
+    border:1px solid #e2e8f0;
+}
+
+.modal{
+    display:none;
+    position:fixed;
+    inset:0;
+    background:rgba(0,0,0,0.7);
+    align-items:center;
+    justify-content:center;
+    padding:20px;
+    z-index:100;
+}
+
+.modal img{
+    max-width:100%;
+    max-height:85vh;
+    border-radius:10px;
+}
+
+.close{
+    position:absolute;
+    top:15px;
+    right:15px;
+    border:0;
+    background:white;
+    width:40px;
+    height:40px;
+    border-radius:50%;
+    font-size:20px;
+    font-weight:bold;
+}
+
+/* User Details Modal */
+.user-modal-content {
+    background: white;
+    width: 100%;
+    max-width: 650px;
+    padding: 24px;
+    border-radius: 20px;
+    max-height: 90vh;
+    overflow-y: auto;
+    position: relative;
+}
+
+@media(max-width:700px){
+    .stats{
+        grid-template-columns:repeat(2,1fr);
+    }
+}
+</style>
+</head>
+
+<body>
+
+<header>
+<div class="header">
+<div class="logo">⚡ HOUFA Earning Admin Panel</div>
+</div>
+</header>
+
+<div class="container">
+
+<div id="status" class="status">
+⚡ Admin Mode Active (Direct Access)
+</div>
+
+<!-- STATS -->
+<div class="stats">
+<div class="stat">
+<small>Total Users</small>
+<h2 id="usersCount">0</h2>
+</div>
+<div class="stat">
+<small>Pending Deposits</small>
+<h2 id="depositCount">0</h2>
+</div>
+<div class="stat" style="position:relative;">
+<small>Total Approved Deposit</small>
+<h2 id="approvedDepositCount" style="color:#059669;">Rs. 0</h2>
+<button class="action view" style="margin-top:6px;" onclick="openAdjustModal('deposit')">✏️ Adjust</button>
+</div>
+<div class="stat" style="position:relative;">
+<small>Total Approved Withdraw</small>
+<h2 id="approvedWithdrawCount" style="color:#dc2626;">Rs. 0</h2>
+<button class="action view" style="margin-top:6px;" onclick="openAdjustModal('withdraw')">✏️ Adjust</button>
+</div>
+</div>
+
+<!-- TABS -->
+<div class="tabs">
+<button class="tab active" onclick="tab('dashboard',this)">Dashboard</button>
+<button class="tab" onclick="tab('deposits',this)">Deposits</button>
+<button class="tab" onclick="tab('withdrawals',this)">Withdrawals</button>
+<button class="tab" onclick="tab('users',this)">Users</button>
+<button class="tab" onclick="tab('plans',this)">Plans</button>
+</div>
+
+<!-- DASHBOARD -->
+<section id="dashboard" class="section active">
+<h2>Admin Dashboard</h2>
+<div class="info">
+<b>Status:</b> Connected to Firebase Successfully<br>
+<b>Project ID:</b> starplus-65dca
+</div>
+</section>
+
+<!-- DEPOSITS -->
+<section id="deposits" class="section">
+<h2>💰 Pending Deposit Requests</h2>
+<div class="table">
+<table>
+<thead>
+<tr>
+<th>User</th>
+<th>Amount</th>
+<th>Method</th>
+<th>Transaction ID</th>
+<th>Screenshot</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="depositTable"></tbody>
+</table>
+</div>
+</section>
+
+<!-- WITHDRAWALS -->
+<section id="withdrawals" class="section">
+<h2>💸 Pending Withdrawal Requests</h2>
+<div class="table">
+<table>
+<thead>
+<tr>
+<th>User</th>
+<th>Amount</th>
+<th>Method</th>
+<th>Account</th>
+<th>Name</th>
+<th>Status</th>
+<th>Action</th>
+</tr>
+</thead>
+<tbody id="withdrawTable"></tbody>
+</table>
+</div>
+</section>
+
+<!-- USERS -->
+<section id="users" class="section">
+<div style="display:flex; justify-content:space-between; align-items:center; margin-bottom:15px;">
+    <h2>👥 Users Management</h2>
+    <button class="danger-btn" onclick="deleteAllUsers()">🗑️ Delete All Users</button>
+</div>
+<div class="table">
+<table>
+<thead>
+<tr>
+<th>Name</th>
+<th>Email</th>
+<th>Balance</th>
+<th>Approved Deposit</th>
+<th>Approved Withdraw</th>
+<th>Actions</th>
+</tr>
+</thead>
+<tbody id="usersTable"></tbody>
+</table>
+</div>
+</section>
+
+<!-- PLANS -->
+<section id="plans" class="section">
+<h2>📊 Investment Plans</h2>
+<input id="planName" placeholder="Plan Name">
+<input id="planAmount" type="number" placeholder="Amount">
+<input id="planDaily" type="number" placeholder="Daily Amount">
+<input id="planDays" type="number" placeholder="Days">
+<button class="primary" onclick="addPlan()">+ Add Plan</button>
+<div id="plansList"></div>
+</section>
+
+</div>
+
+<!-- IMAGE MODAL -->
+<div id="imageModal" class="modal">
+<button class="close" onclick="closeImage()">×</button>
+<img id="modalImage">
+</div>
+
+<!-- USER DETAILS & PORTFOLIO MODAL -->
+<div id="userModal" class="modal">
+<div class="user-modal-content">
+<button class="close" onclick="closeUserModal()">×</button>
+<h3>User Details, Plans & History</h3>
+<div id="userDetailsContent" style="margin-top:15px; font-size:13px; line-height:1.6;">Loading...</div>
+<hr style="margin:20px 0; border:0; border-top:1px solid #e2e8f0;">
+<h3>Manage Balance</h3>
+<div style="display:flex; gap:10px; margin-top:10px;">
+<input id="adjustAmount" type="number" placeholder="Amount" style="margin-bottom:0;">
+<button class="primary" onclick="adjustBalance('add')">Add Balance</button>
+<button class="primary" style="background:#dc2626;" onclick="adjustBalance('subtract')">Subtract Balance</button>
+</div>
+</div>
+</div>
+
+<!-- TOTAL STATS ADJUST MODAL -->
+<div id="adjustModal" class="modal">
+<div class="user-modal-content" style="max-width:400px;">
+<button class="close" onclick="closeAdjustModal()">×</button>
+<h3 id="adjustModalTitle">Adjust Total</h3>
+<p style="font-size:12px; color:#64748b; margin-top:5px;">रकम जोड्नुहोस्, घटाउनुहोस् वा सीधै नयाँ रकम सेट गर्नुहोस्।</p>
+<div style="margin-top:15px;">
+<input id="statAdjustInput" type="number" placeholder="Enter amount">
+<div style="display:grid; grid-template-columns:1fr 1fr; gap:8px; margin-top:10px;">
+<button class="primary" onclick="applyStatAdjustment('add')">+ Add</button>
+<button class="danger-btn" onclick="applyStatAdjustment('subtract')">- Subtract</button>
+</div>
+<button class="primary" style="background:#059669; width:100%; margin-top:8px;" onclick="applyStatAdjustment('set')">✔️ Set Exact Amount</button>
+</div>
+</div>
+</div>
+
+
+<script type="module">
+
+import { initializeApp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-app.js";
+import { getFirestore, doc, getDoc, setDoc, collection, getDocs, query, where, addDoc, updateDoc, deleteDoc, runTransaction, serverTimestamp } from "https://www.gstatic.com/firebasejs/10.12.2/firebase-firestore.js";
+
+const firebaseConfig = {
+  apiKey: "AIzaSyDVhGVg_0TMISSSWRNaLj9eWK1LSE2nm0E",
+  authDomain: "starplus-65dca.firebaseapp.com",
+  projectId: "starplus-65dca",
+  storageBucket: "starplus-65dca.firebasestorage.app",
+  messagingSenderId: "370499285897",
+  appId: "1:370499285897:web:558fcd3b241d32b527e758",
+  measurementId: "G-QEXB5KDFXS"
+};
+
+const app = initializeApp(firebaseConfig);
+const db = getFirestore(app);
+
+let selectedUserId = null;
+let currentAdjustType = null; 
+
+// Automatically load dashboard stats on start
+loadDashboard();
+
+async function loadDashboard(){
+    try{
+        const users = await getDocs(collection(db, "users"));
+        const deposits = await getDocs(query(collection(db, "deposits"), where("status", "==", "pending")));
+        
+        const settingsRef = doc(db, "settings", "stats");
+        const settingsSnap = await getDoc(settingsRef);
+
+        let totalApprovedDep = 0;
+        let totalApprovedWith = 0;
+
+        if(settingsSnap.exists()){
+            const data = settingsSnap.data();
+            totalApprovedDep = Number(data.totalApprovedDeposit || 0);
+            totalApprovedWith = Number(data.totalApprovedWithdraw || 0);
+        } else {
+            const appDeposits = await getDocs(query(collection(db, "deposits"), where("status", "==", "approved")));
+            appDeposits.forEach(d => {
+                totalApprovedDep += Number(d.data().amount || 0);
+            });
+
+            const appWithdraws = await getDocs(query(collection(db, "withdrawals"), where("status", "==", "approved")));
+            appWithdraws.forEach(d => {
+                totalApprovedWith += Number(d.data().amount || 0);
+            });
+        }
+
+        document.getElementById("usersCount").textContent = users.size;
+        document.getElementById("depositCount").textContent = deposits.size;
+        document.getElementById("approvedDepositCount").textContent = "Rs. " + money(totalApprovedDep);
+        document.getElementById("approvedWithdrawCount").textContent = "Rs. " + money(totalApprovedWith);
+    }catch(e){
+        console.error("Dashboard:", e);
+    }
+}
+
+window.openAdjustModal = function(type){
+    currentAdjustType = type;
+    document.getElementById("adjustModalTitle").textContent = type === 'deposit' ? "Adjust Total Approved Deposit" : "Adjust Total Approved Withdraw";
+    document.getElementById("statAdjustInput").value = "";
+    document.getElementById("adjustModal").style.display = "flex";
+};
+
+window.closeAdjustModal = function(){
+    document.getElementById("adjustModal").style.display = "none";
+    currentAdjustType = null;
+};
+
+window.applyStatAdjustment = async function(action){
+    const val = Number(document.getElementById("statAdjustInput").value);
+    if(isNaN(val) || val < 0){
+        alert("Please enter a valid amount.");
+        return;
+    }
+
+    try{
+        const settingsRef = doc(db, "settings", "stats");
+        const settingsSnap = await getDoc(settingsRef);
+        
+        let currentDep = 0;
+        let currentWith = 0;
+
+        if(settingsSnap.exists()){
+            currentDep = Number(settingsSnap.data().totalApprovedDeposit || 0);
+            currentWith = Number(settingsSnap.data().totalApprovedWithdraw || 0);
+        } else {
+            const appDeposits = await getDocs(query(collection(db, "deposits"), where("status", "==", "approved")));
+            appDeposits.forEach(d => currentDep += Number(d.data().amount || 0));
+
+            const appWithdraws = await getDocs(query(collection(db, "withdrawals"), where("status", "==", "approved")));
+            appWithdraws.forEach(d => currentWith += Number(d.data().amount || 0));
+        }
+
+        if(currentAdjustType === 'deposit'){
+            if(action === 'add') currentDep += val;
+            else if(action === 'subtract') {
+                currentDep -= val;
+                if(currentDep < 0) currentDep = 0;
+            }
+            else if(action === 'set') currentDep = val;
+        } else {
+            if(action === 'add') currentWith += val;
+            else if(action === 'subtract') {
+                currentWith -= val;
+                if(currentWith < 0) currentWith = 0;
+            }
+            else if(action === 'set') currentWith = val;
+        }
+
+        await setDoc(settingsRef, {
+            totalApprovedDeposit: currentDep,
+            totalApprovedWithdraw: currentWith,
+            updatedAt: serverTimestamp()
+        });
+
+        alert("Total stats updated successfully!");
+        closeAdjustModal();
+        loadDashboard();
+    }catch(e){
+        alert("Error updating stats: " + e.message);
+    }
+};
+
+window.tab = function(id, btn){
+    document.querySelectorAll(".section").forEach(x => x.classList.remove("active"));
+    document.querySelectorAll(".tab").forEach(x => x.classList.remove("active"));
+    document.getElementById(id).classList.add("active");
+    btn.classList.add("active");
+
+    if(id==="deposits") loadDeposits();
+    if(id==="withdrawals") loadWithdrawals();
+    if(id==="users") loadUsers();
+    if(id==="plans") loadPlans();
+};
+
+/* ================= DEPOSITS ================= */
+async function loadDeposits(){
+    const tbody = document.getElementById("depositTable");
+    tbody.innerHTML = "<tr><td colspan='7'>Loading...</td></tr>";
+
+    try{
+        const q = query(collection(db, "deposits"), where("status", "==", "pending"));
+        const snap = await getDocs(q);
+        tbody.innerHTML = "";
+
+        if(snap.empty){
+            tbody.innerHTML = "<tr><td colspan='7'>No pending deposits</td></tr>";
+            return;
+        }
+
+        snap.forEach(d => {
+            const x = d.data();
+            const tr = document.createElement("tr");
+            let image = x.screenshotURL ? `<button class="action view" onclick='viewImage(${JSON.stringify(x.screenshotURL)})'>View</button>` : "-";
+            
+            tr.innerHTML = `
+                <td>${safe(x.userEmail || x.userId)}</td>
+                <td>Rs. ${money(x.amount)}</td>
+                <td>${safe(x.method)}</td>
+                <td>${safe(x.transactionId)}</td>
+                <td>${image}</td>
+                <td>${safe(x.status)}</td>
+                <td>
+                    <button class="action approve" onclick="approveDeposit('${d.id}')">Approve</button>
+                    <button class="action reject" onclick="rejectDeposit('${d.id}')">Reject</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }catch(e){
+        tbody.innerHTML = `<tr><td colspan="7">❌ ${safe(e.message)}</td></tr>`;
+    }
+}
+
+window.approveDeposit = async function(id){
+    if(!confirm("Approve this deposit?")) return;
+    try{
+        await runTransaction(db, async transaction => {
+            const depositRef = doc(db, "deposits", id);
+            const depositSnap = await transaction.get(depositRef);
+            if(!depositSnap.exists()) throw new Error("Deposit not found.");
+            const deposit = depositSnap.data();
+
+            if(deposit.status !== "pending") throw new Error("Already processed.");
+
+            const userRef = doc(db, "users", deposit.userId);
+            const userSnap = await transaction.get(userRef);
+            if(!userSnap.exists()) throw new Error("User not found.");
+            const user = userSnap.data();
+            const amount = Number(deposit.amount);
+
+            transaction.update(userRef, {
+                balance: Number(user.balance || 0) + amount,
+                totalDeposit: Number(user.totalDeposit || 0) + amount
+            });
+
+            transaction.update(depositRef, {
+                status: "approved",
+                approvedAt: serverTimestamp()
+            });
+
+            const txRef = doc(collection(db, "transactions"));
+            transaction.set(txRef, {
+                userId: deposit.userId,
+                userEmail: deposit.userEmail || "",
+                type: "deposit",
+                amount: amount,
+                method: deposit.method || "",
+                transactionId: deposit.transactionId || "",
+                status: "approved",
+                createdAt: serverTimestamp()
+            });
+        });
+
+        alert("Deposit Approved Successfully");
+        loadDeposits();
+        loadDashboard();
+    }catch(e){
+        alert("Error: " + e.message);
+    }
+};
+
+window.rejectDeposit = async function(id){
+    if(!confirm("Reject this deposit?")) return;
+    try{
+        await updateDoc(doc(db, "deposits", id), {
+            status: "rejected",
+            rejectedAt: serverTimestamp()
+        });
+        alert("Deposit rejected");
+        loadDeposits();
+        loadDashboard();
+    }catch(e){
+        alert(e.message);
+    }
+};
+
+/* ================= WITHDRAWALS ================= */
+async function loadWithdrawals(){
+    const tbody = document.getElementById("withdrawTable");
+    tbody.innerHTML = "<tr><td colspan='7'>Loading...</td></tr>";
+
+    try{
+        const q = query(collection(db, "withdrawals"), where("status", "==", "pending"));
+        const snap = await getDocs(q);
+        tbody.innerHTML = "";
+
+        if(snap.empty){
+            tbody.innerHTML = "<tr><td colspan='7'>No pending withdrawals</td></tr>";
+            return;
+        }
+
+        snap.forEach(d => {
+            const x = d.data();
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${safe(x.userEmail || x.userId)}</td>
+                <td>Rs. ${money(x.amount)}</td>
+                <td>${safe(x.method)}</td>
+                <td>${safe(x.account)}</td>
+                <td>${safe(x.accountName)}</td>
+                <td>${safe(x.status)}</td>
+                <td>
+                    <button class="action approve" onclick="approveWithdrawal('${d.id}')">Approve</button>
+                    <button class="action reject" onclick="rejectWithdrawal('${d.id}')">Reject</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }catch(e){
+        tbody.innerHTML = `<tr><td colspan="7">❌ ${safe(e.message)}</td></tr>`;
+    }
+}
+
+window.approveWithdrawal = async function(id){
+    if(!confirm("Approve this withdrawal?")) return;
+    try{
+        await runTransaction(db, async transaction=>{
+            const ref = doc(db, "withdrawals", id);
+            const snap = await transaction.get(ref);
+            if(!snap.exists()) throw new Error("Withdrawal not found.");
+            const withdrawal = snap.data();
+
+            const userRef = doc(db, "users", withdrawal.userId);
+            const userSnap = await transaction.get(userRef);
+            if(!userSnap.exists()) throw new Error("User not found.");
+            const user = userSnap.data();
+
+            const amount = Number(withdrawal.amount);
+            const balance = Number(user.balance || 0);
+
+            if(balance < amount) throw new Error("Insufficient user balance.");
+
+            transaction.update(userRef, {
+                balance: balance - amount,
+                totalWithdraw: Number(user.totalWithdraw || 0) + amount
+            });
+
+            transaction.update(ref, {
+                status: "approved",
+                approvedAt: serverTimestamp()
+            });
+
+            const tx = doc(collection(db, "transactions"));
+            transaction.set(tx, {
+                userId: withdrawal.userId,
+                userEmail: withdrawal.userEmail || "",
+                type: "withdraw",
+                amount: amount,
+                method: withdrawal.method || "",
+                account: withdrawal.account || "",
+                accountName: withdrawal.accountName || "",
+                status: "approved",
+                createdAt: serverTimestamp()
+            });
+        });
+
+        alert("Withdrawal Approved");
+        loadWithdrawals();
+        loadDashboard();
+    }catch(e){
+        alert(e.message);
+    }
+};
+
+window.rejectWithdrawal = async function(id){
+    if(!confirm("Reject this withdrawal?")) return;
+    try{
+        await updateDoc(doc(db, "withdrawals", id), {
+            status: "rejected",
+            rejectedAt: serverTimestamp()
+        });
+        alert("Withdrawal rejected");
+        loadWithdrawals();
+        loadDashboard();
+    }catch(e){
+        alert(e.message);
+    }
+};
+
+/* ================= USERS MANAGEMENT ================= */
+async function loadUsers(){
+    const tbody = document.getElementById("usersTable");
+    tbody.innerHTML = "<tr><td colspan='6'>Loading...</td></tr>";
+
+    try{
+        const snap = await getDocs(collection(db, "users"));
+        tbody.innerHTML = "";
+
+        if(snap.empty){
+            tbody.innerHTML = "<tr><td colspan='6'>No users found</td></tr>";
+            return;
+        }
+
+        const appDepositsSnap = await getDocs(query(collection(db, "deposits"), where("status", "==", "approved")));
+        const appWithdrawsSnap = await getDocs(query(collection(db, "withdrawals"), where("status", "==", "approved")));
+
+        const depTotals = {};
+        appDepositsSnap.forEach(d => {
+            const data = d.data();
+            depTotals[data.userId] = (depTotals[data.userId] || 0) + Number(data.amount || 0);
+        });
+
+        const withTotals = {};
+        appWithdrawsSnap.forEach(d => {
+            const data = d.data();
+            withTotals[data.userId] = (withTotals[data.userId] || 0) + Number(data.amount || 0);
+        });
+
+        snap.forEach(d => {
+            const x = d.data();
+            const userId = d.id;
+            
+            const totalDep = depTotals[userId] || Number(x.totalDeposit || 0);
+            const totalWith = withTotals[userId] || Number(x.totalWithdraw || 0);
+
+            const tr = document.createElement("tr");
+            tr.innerHTML = `
+                <td>${safe(x.name || "-")}</td>
+                <td>${safe(x.email || "-")}</td>
+                <td>Rs. ${money(x.balance)}</td>
+                <td>Rs. ${money(totalDep)}</td>
+                <td>Rs. ${money(totalWith)}</td>
+                <td>
+                    <button class="action view" onclick="openUserModal('${userId}', '${safe(x.name || x.email)}')">View & Edit</button>
+                    <button class="action delete-btn" onclick="deleteUser('${userId}')">Delete</button>
+                </td>
+            `;
+            tbody.appendChild(tr);
+        });
+    }catch(e){
+        tbody.innerHTML = `<tr><td colspan="6">❌ ${safe(e.message)}</td></tr>`;
+    }
+}
+
+window.openUserModal = async function(userId, userName){
+    selectedUserId = userId;
+    document.getElementById("userModal").style.display = "flex";
+    const content = document.getElementById("userDetailsContent");
+    content.innerHTML = "Loading user investments, deposits & withdrawals...";
+
+    try {
+        const invQuery = query(collection(db, "investments"), where("userId", "==", userId));
+        const invSnap = await getDocs(invQuery);
+
+        const depQuery = query(collection(db, "deposits"), where("userId", "==", userId), where("status", "==", "approved"));
+        const depSnap = await getDocs(depQuery);
+
+        const withQuery = query(collection(db, "withdrawals"), where("userId", "==", userId), where("status", "==", "approved"));
+        const withSnap = await getDocs(withQuery);
+
+        let html = `<h4>👤 User: ${userName}</h4>`;
+        
+        html += `<div style="margin-top:12px;"><b>📦 Purchased Investment Plans:</b><ul>`;
+        if(invSnap.empty){
+            html += `<li>No plans purchased yet.</li>`;
+        } else {
+            invSnap.forEach(doc => {
+                const inv = doc.data();
+                html += `<li><b>${safe(inv.planName)}</b> - Amount: Rs. ${money(inv.amount)} | Daily: Rs. ${money(inv.daily)} | Status: ${safe(inv.status)}</li>`;
+            });
+        }
+        html += `</ul></div>`;
+
+        html += `<div style="margin-top:12px;"><b>💰 Approved Deposits:</b><ul>`;
+        if(depSnap.empty){
+            html += `<li>No approved deposits.</li>`;
+        } else {
+            depSnap.forEach(doc => {
+                const dep = doc.data();
+                html += `<li>Amount: <b>Rs. ${money(dep.amount)}</b> | Method: ${safe(dep.method)} | TxID: ${safe(dep.transactionId)}</li>`;
+            });
+        }
+        html += `</ul></div>`;
+
+        html += `<div style="margin-top:12px;"><b>💸 Approved Withdrawals:</b><ul>`;
+        if(withSnap.empty){
+            html += `<li>No approved withdrawals.</li>`;
+        } else {
+            withSnap.forEach(doc => {
+                const wit = doc.data();
+                html += `<li>Amount: <b>Rs. ${money(wit.amount)}</b> | Method: ${safe(wit.method)} | Account: ${safe(wit.account)}</li>`;
+            });
+        }
+        html += `</ul></div>`;
+
+        content.innerHTML = html;
+    } catch(e) {
+        content.innerHTML = "Error loading user details: " + e.message;
+    }
+};
+
+window.closeUserModal = function(){
+    document.getElementById("userModal").style.display = "none";
+    selectedUserId = null;
+};
+
+window.adjustBalance = async function(actionType){
+    if(!selectedUserId) return;
+    const amountInput = document.getElementById("adjustAmount");
+    const val = Number(amountInput.value);
+    if(!val || val <= 0){
+        alert("Please enter a valid amount.");
+        return;
+    }
+
+    try{
+        const userRef = doc(db, "users", selectedUserId);
+        await runTransaction(db, async transaction => {
+            const userSnap = await transaction.get(userRef);
+            if(!userSnap.exists()) throw new Error("User not found.");
+            const userData = userSnap.data();
+            let currentBalance = Number(userData.balance || 0);
+
+            if(actionType === 'add'){
+                currentBalance += val;
+            } else {
+                currentBalance -= val;
+                if(currentBalance < 0) currentBalance = 0;
+            }
+
+            transaction.update(userRef, { balance: currentBalance });
+        });
+
+        alert("Balance updated successfully!");
+        amountInput.value = "";
+        loadUsers();
+        closeUserModal();
+    } catch(e) {
+        alert("Error updating balance: " + e.message);
+    }
+};
+
+window.deleteUser = async function(userId){
+    if(!confirm("Are you sure you want to delete this user from Firestore?")) return;
+    try{
+        await deleteDoc(doc(db, "users", userId));
+        alert("User document deleted successfully.");
+        loadUsers();
+        loadDashboard();
+    }catch(e){
+        alert("Error deleting user: " + e.message);
+    }
+};
+
+window.deleteAllUsers = async function(){
+    if(!confirm("⚠️ WARNING: Are you sure you want to delete ALL users? This action cannot be undone!")) return;
+    try{
+        const snap = await getDocs(collection(db, "users"));
+        if(snap.empty){
+            alert("No users found to delete.");
+            return;
+        }
+
+        let promises = [];
+        snap.forEach(d => {
+            promises.push(deleteDoc(doc(db, "users", d.id)));
+        });
+
+        await Promise.all(promises);
+        alert("All users deleted successfully.");
+        loadUsers();
+        loadDashboard();
+    }catch(e){
+        alert("Error deleting all users: " + e.message);
+    }
+};
+
+/* ================= PLANS ================= */
+async function loadPlans(){
+    const box = document.getElementById("plansList");
+    box.innerHTML = "Loading...";
+
+    try{
+        const snap = await getDocs(collection(db, "investmentPlans"));
+        box.innerHTML = "";
+
+        if(snap.empty){
+            box.innerHTML = "<p>No plans available.</p>";
+            return;
+        }
+
+        snap.forEach(d => {
+            const x = d.data();
+            const div = document.createElement("div");
+            div.className = "plan";
+            div.innerHTML = `
+                <div>
+                    <b>${safe(x.name)}</b><br>
+                    Amount: Rs. ${money(x.amount)}<br>
+                    Daily: Rs. ${money(x.daily)}<br>
+                    Days: ${money(x.days)}
+                </div>
+                <button class="action reject" onclick="deletePlan('${d.id}')">Delete</button>
+            `;
+            box.appendChild(div);
+        });
+    }catch(e){
+        box.innerHTML = "❌ " + safe(e.message);
+    }
+}
+
+window.addPlan = async function(){
+    const name = document.getElementById("planName").value.trim();
+    const amount = Number(document.getElementById("planAmount").value);
+    const daily = Number(document.getElementById("planDaily").value);
+    const days = Number(document.getElementById("planDays").value);
+
+    if(!name || amount<=0 || daily<=0 || days<=0){
+        alert("Please fill all fields correctly.");
+        return;
+    }
+
+    try{
+        await addDoc(collection(db, "investmentPlans"), {
+            name, amount, daily, days,
+            createdAt: serverTimestamp()
+        });
+        document.getElementById("planName").value = "";
+        document.getElementById("planAmount").value = "";
+        document.getElementById("planDaily").value = "";
+        document.getElementById("planDays").value = "";
+        loadPlans();
+    }catch(e){
+        alert(e.message);
+    }
+};
+
+window.deletePlan = async function(id){
+    if(!confirm("Delete this plan?")) return;
+    try{
+        await deleteDoc(doc(db, "investmentPlans", id));
+        loadPlans();
+    }catch(e){
+        alert(e.message);
+    }
+};
+
+/* ================= IMAGES & HELPERS ================= */
+window.viewImage = function(url){
+    document.getElementById("modalImage").src = url;
+    document.getElementById("imageModal").style.display = "flex";
+};
+
+window.closeImage = function(){
+    document.getElementById("imageModal").style.display = "none";
+};
+
+function safe(value){
+    return String(value ?? "")
+    .replaceAll("&","&amp;")
+    .replaceAll("<","&lt;")
+    .replaceAll(">","&gt;")
+    .replaceAll('"',"&quot;")
+    .replaceAll("'","&#039;");
+}
+
+function money(value){
+    const n = Number(value || 0);
+    if(!Number.isFinite(n)) return "0";
+    return n.toLocaleString("en-IN");
+}
+
+</script>
+
+</body>
+</html>
