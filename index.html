@@ -1250,7 +1250,7 @@ button{border:0;cursor:pointer}
   </div>
   <div class="qr-wrap">
    <p>Scan the QR code for your selected payment method</p>
-   <img class="qr" src="https://i.ibb.co/kghmptKm/IMG-20261115-153747.jpg " alt="Payment QR">
+   <img class="qr" src="https://i.ibb.co/kghmptKm/IMG-20261115-153747.jpg" alt="Payment QR">
   </div>
   <div class="input-group">
    <label>Deposit Amount</label>
@@ -1315,13 +1315,12 @@ import { getAuth, createUserWithEmailAndPassword, signInWithEmailAndPassword, on
 import { getFirestore, doc, getDoc, setDoc, addDoc, collection, query, where, getDocs, serverTimestamp, updateDoc } from "https://www.gstatic.com/firebasejs/11.10.0/firebase-firestore.js";
 
 const firebaseConfig = {
-  apiKey: "AIzaSyDVhGVg_0TMISSSWRNaLj9eWK1LSE2nm0E",
-  authDomain: "starplus-65dca.firebaseapp.com",
-  projectId: "starplus-65dca",
-  storageBucket: "starplus-65dca.firebasestorage.app",
-  messagingSenderId: "370499285897",
-  appId: "1:370499285897:web:558fcd3b241d32b527e758",
-  measurementId: "G-QEXB5KDFXS"
+  apiKey: "AIzaSyCuV0l5jSYJDonyLXunySs5ZNvkm-2geHg",
+  authDomain: "earning-3be0f.firebaseapp.com",
+  projectId: "earning-3be0f",
+  storageBucket: "earning-3be0f.firebasestorage.app",
+  messagingSenderId: "740318894879",
+  appId: "1:740318894879:web:84c6fb986b9e1977baae2a"
 };
 
 const app=initializeApp(firebaseConfig);
@@ -1332,9 +1331,9 @@ const IMGBB_API_KEY="bbcb8de63e0c3f1ce6bf43d1bfad317f";
 
 const DEFAULT_PLANS=[
  {id:"plan150",name:"Starter Plan",amount:150,daily:70,days:30},
- {id:"plan200",name:"Basic Plan",amount:200,daily:130,days:30},
- {id:"plan250",name:"Standard Plan",amount:250,daily:160,days:30},
- {id:"plan300",name:"Premium Plan",amount:300,daily:195,days:30}
+ {id:"plan200",name:"Basic Plan",amount:200,daily:180,days:30},
+ {id:"plan250",name:"Standard Plan",amount:250,daily:110,days:30},
+ {id:"plan300",name:"Premium Plan",amount:300,daily:110,days:30}
 ];
 
 let currentUser=null;
